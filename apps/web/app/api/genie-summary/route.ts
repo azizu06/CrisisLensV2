@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { resolveCountryIso3 } from "@/lib/country-insights";
 import {
   GenieApiError,
@@ -90,6 +91,9 @@ export async function POST(request: NextRequest) {
   if (!iso3) {
     return NextResponse.json({ error: "Unknown countryCode. Use ISO3 or ISO2." }, { status: 400 });
   }
+
+  const rateLimited = checkDatabricksExpensiveRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   try {
     const sessionId = request.cookies.get(SESSION_COOKIE)?.value;

@@ -7,6 +7,7 @@ import {
   pollMessage,
   startConversation
 } from "@/lib/genieClient";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { formatGenieNarrative } from "@/lib/genie/response-format";
 
 type AskIntent = "summary" | "overfunded" | "top10" | "comparison" | "general";
@@ -254,6 +255,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  const rateLimited = checkDatabricksExpensiveRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   const prompt = buildDeterministicPrompt({
     iso3,

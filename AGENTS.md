@@ -167,6 +167,10 @@ ML training caveat:
 - Optional: `NEXT_PUBLIC_GLOBE_WS_URL`
   - Used by `apps/web/components/GlobeDashboard.tsx` for WebSocket anomaly/highlight events.
   - If unset, WebSocket subscription is skipped.
+- Optional Databricks API rate limit tuning:
+  - `DATABRICKS_EXPENSIVE_RATE_LIMIT` defaults to `12` requests per `DATABRICKS_RATE_LIMIT_WINDOW_SECONDS` for Genie/AI routes.
+  - `DATABRICKS_READ_RATE_LIMIT` defaults to `60` requests per `DATABRICKS_RATE_LIMIT_WINDOW_SECONDS` for SQL read routes.
+  - `DATABRICKS_RATE_LIMIT_WINDOW_SECONDS` defaults to `900`.
 
 ## Implementation Guardrails
 - Preserve API response shapes used by `apps/web/lib/api/crisiswatch.ts` unless updating both server routes and client types together.

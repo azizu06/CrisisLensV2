@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkDatabricksReadRateLimit } from "@/lib/api/rate-limit";
 import { getDatabricksProvider } from "@/lib/databricks/client";
 import { loadCountryMetrics } from "@/lib/loadMetrics";
 import { getLayerValue, riskBandFromScore } from "@/lib/metrics";
@@ -8,6 +9,9 @@ export async function GET(request: NextRequest) {
   if (!iso3 || iso3.length !== 3) {
     return NextResponse.json({ error: "Invalid ISO3 code." }, { status: 400 });
   }
+
+  const rateLimited = checkDatabricksReadRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   const provider = getDatabricksProvider();
   const state = await provider.fetchCountryState(iso3);

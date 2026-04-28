@@ -8,6 +8,7 @@ import {
   pollMessage,
   startConversation
 } from "@/lib/genieClient";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { formatGenieNarrative } from "@/lib/genie/response-format";
 import { getConversationForSession, setConversationForSession } from "@/lib/genie/session-store";
 
@@ -189,6 +190,9 @@ export async function POST(request: NextRequest) {
   if (!question) {
     return NextResponse.json({ ok: false, error: "question is required." }, { status: 400 });
   }
+
+  const rateLimited = checkDatabricksExpensiveRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   try {
     const intent = detectIntent(question);

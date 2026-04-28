@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { startConversation } from "@/lib/genie/databricks";
 import { getConversationForSession, setConversationForSession } from "@/lib/genie/session-store";
 
@@ -13,6 +14,9 @@ export async function POST(request: NextRequest) {
     // Hackathon-friendly session state: cookie session id -> in-memory conversation id.
     let conversationId = getConversationForSession(sessionId);
     if (!conversationId) {
+      const rateLimited = checkDatabricksExpensiveRateLimit(request);
+      if (rateLimited) return rateLimited;
+
       const started = await startConversation("CrisisLens session started");
       conversationId = started.conversationId;
       setConversationForSession(sessionId, conversationId);

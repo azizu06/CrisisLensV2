@@ -7,6 +7,7 @@ import {
   pollMessage,
   startConversation
 } from "@/lib/genieClient";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { getConversationForSession, setConversationForSession } from "@/lib/genie/session-store";
 
 type GeniePayload = {
@@ -170,6 +171,9 @@ export async function POST(request: NextRequest) {
   if (!nlQuery) {
     return NextResponse.json({ error: "nl_query is required." }, { status: 400 });
   }
+
+  const rateLimited = checkDatabricksExpensiveRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   const scopedIso3 = payload?.iso3?.trim().toUpperCase();
   const existingSessionId = request.cookies.get(SESSION_COOKIE)?.value;

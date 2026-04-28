@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { GeoMetrics, fetchGeoMetricsByIso3, generateGeoInsight, mapGeoError } from "@/lib/geo-insight";
 
 type Payload = {
@@ -18,6 +19,9 @@ export async function POST(request: Request) {
   if (!payload.metrics || !payload.metrics.iso3 || !payload.metrics.country) {
     return NextResponse.json({ ok: false, error: "metrics with iso3/country are required." }, { status: 400 });
   }
+
+  const rateLimited = checkDatabricksExpensiveRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   try {
     // Always re-read the latest Databricks row for numeric grounding.

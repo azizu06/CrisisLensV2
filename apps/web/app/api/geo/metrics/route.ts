@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkDatabricksReadRateLimit } from "@/lib/api/rate-limit";
 import { fetchGeoMetricsByIso3, mapGeoError } from "@/lib/geo-insight";
 
 export async function GET(request: NextRequest) {
@@ -7,6 +8,9 @@ export async function GET(request: NextRequest) {
   if (!iso3) {
     return NextResponse.json({ ok: false, error: "iso3 is required." }, { status: 400 });
   }
+
+  const rateLimited = checkDatabricksReadRateLimit(request);
+  if (rateLimited) return rateLimited;
 
   try {
     const metrics = await fetchGeoMetricsByIso3(iso3);

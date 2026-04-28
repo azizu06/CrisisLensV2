@@ -38,6 +38,9 @@ Key UI entry points:
 - Genie adapter: `apps/web/lib/databricks/genie.ts`
 - CV adapter: `apps/web/lib/cv/provider.ts`
 - Frontend API contract types/client: `apps/web/lib/api/crisiswatch.ts`
+- Databricks-backed API protection: `apps/web/lib/api/rate-limit.ts`
+  - Expensive Genie/AI routes share a per-client in-memory bucket (`DATABRICKS_EXPENSIVE_RATE_LIMIT`, default `12` per 15 minutes).
+  - Databricks SQL read routes use a separate per-client bucket (`DATABRICKS_READ_RATE_LIMIT`, default `60` per 15 minutes).
 
 ## Test + Build Status
 Validated from repository root:

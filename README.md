@@ -80,6 +80,12 @@ Optional compatibility overrides (if your workspace does not expose AI Gateway p
 - `DATABRICKS_AI_CHAT_PATH` (example: `/api/2.0/ai-gateway/chat/completions`)
 - `DATABRICKS_AI_ENDPOINT` (serving endpoint name to call via `/serving-endpoints/{name}/invocations`)
 
+Databricks-backed API routes have an in-memory per-client rate limit. Optional tuning:
+
+- `DATABRICKS_EXPENSIVE_RATE_LIMIT` (default: `12` requests per window for Genie/AI routes)
+- `DATABRICKS_READ_RATE_LIMIT` (default: `60` requests per window for SQL read routes)
+- `DATABRICKS_RATE_LIMIT_WINDOW_SECONDS` (default: `900`)
+
 Quick checks:
 
 ```bash

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { checkDatabricksExpensiveRateLimit } from "@/lib/api/rate-limit";
 import { startConversation } from "@/lib/genieClient";
 import { getConversationForSession, setConversationForSession } from "@/lib/genie/session-store";
 
@@ -13,6 +14,9 @@ export async function POST(request: NextRequest) {
   try {
     let conversationId = getConversationForSession(sessionId);
     if (!conversationId) {
+      const rateLimited = checkDatabricksExpensiveRateLimit(request);
+      if (rateLimited) return rateLimited;
+
       const created = await startConversation();
       conversationId = created.conversationId;
       setConversationForSession(sessionId, conversationId);
@@ -41,4 +45,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

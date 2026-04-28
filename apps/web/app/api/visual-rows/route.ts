@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { checkDatabricksReadRateLimit } from "@/lib/api/rate-limit";
 import { fetchLatestCountryRows } from "@/lib/databricks/latest-country";
 import { loadCountryMetrics } from "@/lib/loadMetrics";
 
@@ -15,7 +16,10 @@ type VisualRow = {
   severity_score?: number;
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const rateLimited = checkDatabricksReadRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   try {
     const latest = await fetchLatestCountryRows();
     const rows: VisualRow[] = latest.map((row) => ({
