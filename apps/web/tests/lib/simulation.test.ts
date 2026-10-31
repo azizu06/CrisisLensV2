@@ -175,7 +175,7 @@ describe("quarterly simulation", () => {
     expect(selected?.rank_after).toBe(simulation.scenario.rank);
   });
 
-  it("marks arrows as relief when a peer stays ahead but loses OCI ground versus selected country", () => {
+  it("marks arrows as pressure when a peer stays ahead while the selected country gains funding", () => {
     const rows: CountryMetrics[] = [
       {
         iso3: "AAA",
@@ -239,7 +239,7 @@ describe("quarterly simulation", () => {
     // determined by relative rank movement (BBB overtakes / stays ahead of the now-better-
     // funded selected country), not by the peer's own score change.
     expect(bbbArrow?.overall_score_delta).toBe(0);
-    expect(bbbArrow?.direction).toBe("relief");
+    expect(bbbArrow?.direction).toBe("pressure");
     expect(typeof bbbArrow?.projected_neglect_delta).toBe("number");
   });
 });

@@ -50,4 +50,10 @@ describe("dashboard utils", () => {
     expect(suggestions.includes("Germany")).toBe(true);
     expect(suggestions.some((item) => /\([A-Z]{3}\)$/.test(item))).toBe(false);
   });
+
+  it("resolves a name-only suggestion to that exact country, not a longer name containing it", () => {
+    expect(resolveJumpToCountryIso3("Sudan")).toBe("SDN");
+    expect(resolveJumpToCountryIso3("Guinea")).toBe("GIN");
+    expect(resolveJumpToCountryIso3("India")).toBe("IND");
+  });
 });

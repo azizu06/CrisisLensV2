@@ -20,7 +20,7 @@ export function getOutlierLabel(flag: "low" | "high" | "none"): string {
 }
 
 export function getCountrySuggestions(): string[] {
-  return allCountriesSorted.map((row) => `${row.name} (${row.iso3})`);
+  return allCountriesSorted.map((row) => row.name);
 }
 
 export function resolveJumpToCountryIso3(rawQuery: string): string | null {
@@ -36,6 +36,11 @@ export function resolveJumpToCountryIso3(rawQuery: string): string | null {
   const exactIso = allCountriesSorted.find((item) => item.iso3.toLowerCase() === needle);
   if (exactIso) {
     return exactIso.iso3;
+  }
+
+  const exactName = allCountriesSorted.find((item) => item.name.toLowerCase() === needle);
+  if (exactName) {
+    return exactName.iso3;
   }
 
   const nameMatch = allCountriesSorted.find((item) => item.name.toLowerCase().includes(needle));
