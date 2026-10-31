@@ -13,7 +13,24 @@ CrisisLens turns fragmented humanitarian risk, population, and funding data into
 
 </div>
 
+**CrisisLens is a crisis-risk dashboard on a 3D globe that shows which countries need humanitarian help most and where funding falls short. It won the Databricks Challenge at Hacklytics 2026.**
+
+**[Try the live demo](https://crisis-lens-v2-web.vercel.app)** (no sign-up)
+
 ![CrisisLens global command center](docs/assets/crisislens-dashboard.png)
+
+## Run it
+
+You need Node.js 20+ and pnpm 10+.
+
+```bash
+git clone https://github.com/azizu06/CrisisLensV2.git && cd CrisisLensV2
+pnpm install
+pnpm dev               # open http://localhost:3000/dashboard
+pnpm run test:unit     # run the unit tests
+```
+
+The committed data snapshot runs the globe and scenario tools with no credentials. See [Run locally](#run-locally) to connect Databricks.
 
 ## From scattered signals to a country decision
 
